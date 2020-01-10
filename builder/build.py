@@ -37,7 +37,7 @@ class MyWeirdLogger:
 
   def write(self, data):
     with self.writeLock:
-      self.file.write(data)
+      self.file.write(data + '\n')
       print(data)
 
   def getWriter(self, name):
@@ -89,7 +89,6 @@ def checkDirectories():
     os.mkdir(OTP_OUTPUT_DIR)  
 
 def downloadAndCheckFeedVersion_TransitFeeds(currentVersion, logger):
-  print(logger)
   MISSING_VALUE = (False, None, None)
   title = currentVersion['f']['t']
   logger.info(f'looking at {title}')
@@ -152,7 +151,7 @@ def downloadAndCheckFeedVersion_TransitFeeds(currentVersion, logger):
     try:
       validatorOutput = subprocess.check_output(cmd,
         stderr=subprocess.STDOUT,
-        shell=True)
+        shell=True).decode()
       logger.info(validatorOutput)
     except subprocess.CalledProcessError as e:
       validatorOutput = e.output.decode()
@@ -193,7 +192,6 @@ def downloadAndCheckFeed_TransitFeeds_FeedId(feedId):
       if index > 5:
         logger.error(f'Not looking back more than five versions for {feedId}')
 
-    print('feedid3')
     logger.error(f'No good versions for {feedId} - {title}')
     return False
   except:
@@ -203,7 +201,8 @@ def downloadAndCheckFeed_TransitFeeds_FeedId(feedId):
 def downloadAndCheckFeed_TransitFeeds_Location(location):
   feeds = transitfeeds.getLocation(location)
   for f in feeds['results']['feeds']:
-    downloadAndCheckFeed_TransitFeeds_FeedId(f['id'])
+    if f['ty'] == 'gtfs':
+      downloadAndCheckFeed_TransitFeeds_FeedId(f['id'])
 
 def downloadAndCheckFeed_TransitFeeds(feed):
   if 'location' in feed:
@@ -275,7 +274,7 @@ def main():
   checkDirectories()
   checkOTP()
   downloadFeeds()
-  # runOTP(OTP_INPUT_DIR, OTP_OUTPUT_DIR)
+  runOTP(OTP_INPUT_DIR, OTP_OUTPUT_DIR)
 
 if __name__ == '__main__':
     main()
