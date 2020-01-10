@@ -17,26 +17,11 @@ from utils import downloadFile
 sys.path.append('..')
 from shared import download_otp
 from shared.download_otp import CURRENT_OTP_JAR
+from validate_gtfs import ValidateGtfs
 
 from mylogger import MyGlobalLogger
 
 globalLogger = None
-
-def checkForTransitFeed():
-  # check if we've checked out transitfeed
-  if not os.path.isdir('transitfeed'):
-    print('Don\'t have transitfeed, checking out from git')
-    subprocess.run(['git', 'clone', 'https://github.com/google/transitfeed'])  # doesn't capture output
-  else:
-    print('great, you have transitfeed')
-
-def checkForPython2():
-  try:
-    subprocess.run('python2 --version', shell=True)
-    print('great, you have python2')
-  except:
-    print(colored('transitfeed requires python2, stupid thing, which you don\'t have. gotta go get that. exiting', 'red'))
-    sys.exit(1)
 
 def checkDirectories():
   if not os.path.isdir(FEED_DIR):
@@ -108,8 +93,7 @@ def runOTP(otpInputDir, otpOutputDir):
 def main():
   global globalLogger
   globalLogger = MyGlobalLogger('feed-import-%s.log' % datetime.datetime.now().strftime('%Y-%m-%d-%H-%M'))
-  checkForTransitFeed()
-  checkForPython2()
+  ValidateGtfs.downloadDeps()
   checkDirectories()
   checkOTP()
   downloadFeeds()

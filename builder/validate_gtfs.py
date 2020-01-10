@@ -1,7 +1,30 @@
 import os
 import subprocess
+import sys
 
 class ValidateGtfs:
+  def checkForPython2():
+    try:
+      subprocess.run('python2 --version', shell=True)
+      print('great, you have python2')
+    except:
+      print(colored('transitfeed requires python2, stupid thing, which you don\'t have. gotta go get that. exiting', 'red'))
+      sys.exit(1)
+
+  @staticmethod
+  def checkForTransitFeed():
+    # check if we've checked out transitfeed
+    if not os.path.isdir('transitfeed'):
+      print('Don\'t have transitfeed, checking out from git')
+      subprocess.run(['git', 'clone', 'https://github.com/google/transitfeed'])  # doesn't capture output
+    else:
+      print('great, you have transitfeed')
+
+  @staticmethod
+  def downloadDeps():
+    ValidateGtfs.checkForPython2()
+    ValidateGtfs.checkForTransitFeed()
+
   @staticmethod
   def validate(fileDest, logger):
     logger.info(f'--> verifying {fileDest}')
