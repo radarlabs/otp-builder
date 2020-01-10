@@ -57,7 +57,7 @@ globalLogger = None
 def checkForTransitFeed():
   # check if we've checked out transitfeed
   if not os.path.isdir('transitfeed'):
-    print('Don't have transitfeed, checkout out from git')
+    print('Don\'t have transitfeed, checking out from git')
     subprocess.run(['git', 'clone', 'https://github.com/google/transitfeed'])  # doesn't capture output
   else:
     print('great, you have transitfeed')
@@ -67,7 +67,7 @@ def checkForPython2():
     subprocess.run('python2 --version', shell=True)
     print('great, you have python2')
   except:
-    print(colored('transitfeed requires python2, stupid thing, which you don't have. gotta go get that. exiting', 'red'))
+    print(colored('transitfeed requires python2, stupid thing, which you don\'t have. gotta go get that. exiting', 'red'))
     sys.exit(1)
 
 def checkDirectories():
@@ -211,7 +211,7 @@ def downloadAndCheckFeed_TransitFeeds(feed):
   elif 'id' in feed:
     downloadAndCheckFeed_TransitFeeds_FeedId(feed['id'])
   else:
-    print(colored(f'don't know how to parse transitfeeds feed {feed}', 'red'))
+    print(colored(f'don\'t know how to parse transitfeeds feed {feed}', 'red'))
     sys.exit(1)
 
 def checkOTP():
