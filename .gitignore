@@ -1,0 +1,17 @@
+.env
+__pycache__
+*.zip
+*.pyc
+*.jar
+
+data/
+feeds/
+
+otp-input
+otp-output
+transitfeed
+input
+graphs
+lucene
+
+*.log
