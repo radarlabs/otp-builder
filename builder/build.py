@@ -100,27 +100,19 @@ def runOTP(otpInputDir, otpOutputDir):
     if os.path.exists(currentLinkPath) and os.path.islink(currentLinkPath):
       os.unlink(currentLinkPath)
 
-    if os.path.exists(currentLinkPath) and not os.path.islink(currentLinkPath):
-      print(colored(f'{currentLinkPath} is not a symlink, not removing and not updating', 'yellow'))
-      print(f'To check by hand run')
-      print(f'  java -Xmx2G -jar {CURRENT_OTP_JAR} --router {dateStr} --graphs graphs --server')
-    else:
-      os.symlink(dateStr, currentLinkPath)
-      print(f'linking to {currentLinkPath}')
-      print(f'To check by hand run')
-      print(f'  java -Xmx2G -jar {CURRENT_OTP_JAR} --router default --graphs graphs --server')
-    
+    print(f'To check by hand run')
+    print(f'  java -Xmx10G -jar {CURRENT_OTP_JAR} --router {dateStr} --graphs graphs --server')    
     print('check that it is working in nyc with')
-    print('http://localhost:8080/otp/routers/default/plan?fromPlace=40.700853,-73.947738&toPlace=40.741524,%20-73.989330')
+    print(f'http://localhost:8080/otp/routers/{dateStr}/plan?fromPlace=40.700853,-73.947738&toPlace=40.741524,%20-73.989330')
 
 def main():
-  # global globalLogger
-  # globalLogger = MyGlobalLogger('feed-import-%s.log' % datetime.datetime.now().strftime('%Y-%m-%d-%H-%M'))
-  # checkForTransitFeed()
-  # checkForPython2()
-  # checkDirectories()
-  # checkOTP()
-  # downloadFeeds()
+  global globalLogger
+  globalLogger = MyGlobalLogger('feed-import-%s.log' % datetime.datetime.now().strftime('%Y-%m-%d-%H-%M'))
+  checkForTransitFeed()
+  checkForPython2()
+  checkDirectories()
+  checkOTP()
+  downloadFeeds()
   runOTP(OTP_INPUT_DIR, OTP_OUTPUT_DIR)
 
 if __name__ == '__main__':
