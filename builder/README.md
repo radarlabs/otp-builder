@@ -20,4 +20,8 @@ To add a feed, run `add-feed.py` with either a location URL like https://openmob
 
 Just run `./build.py` - this will output a new inded at graphs/TIMESTAMP/ which will also be symlinked to graphs/current. There will also be an import log file in the current directory with more information about validation and whatnot.
 
+build.py requires an [api key from transitfeeds.com](http://transitfeeds.com/api/keys). To run build.py, either specify TRANSITFEEDS_API_KEY as an environment variable or put TRANSITFEEDS_API_KEY=YOUR_KEY in a file called .env
+
+     TRANSITFEEDS_API_KEY=YOUR_KEY ./build.py 
+
 You can run & test this index on your local machine or in AWS.
