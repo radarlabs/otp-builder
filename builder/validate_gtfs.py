@@ -1,29 +1,35 @@
 import os
 import subprocess
 import sys
+import requests
+import xml.etree.ElementTree as ET
+from utils import downloadFile
+
 
 class ValidateGtfs:
-  def checkForPython2():
-    try:
-      subprocess.run('python2 --version', shell=True)
-      print('great, you have python2')
-    except:
-      print(colored('transitfeed requires python2, stupid thing, which you don\'t have. gotta go get that. exiting', 'red'))
-      sys.exit(1)
-
   @staticmethod
-  def checkForTransitFeed():
-    # check if we've checked out transitfeed
-    if not os.path.isdir('transitfeed'):
-      print('Don\'t have transitfeed, checking out from git')
-      subprocess.run(['git', 'clone', 'https://github.com/google/transitfeed'])  # doesn't capture output
+  def checkAndDownloadJar():
+    url = 'https://repo1.maven.org/maven2/com/conveyal/gtfs-lib/maven-metadata.xml'
+    document = requests.get(url).content.decode('utf-8')
+    tree = ET.fromstring(document)
+    lst = tree.find('./versioning/latest')
+    latestVersion = lst.text
+
+    expectedJar = f'gtfs-lib-{latestVersion}-shaded.jar'
+    if not os.path.exists(expectedJar):
+      print(f'downloading {expectedJar}')
+      downloadFile(
+        f'https://repo1.maven.org/maven2/com/conveyal/gtfs-lib/{latestVersion}/{expectedJar}',
+        expectedJar)
+      print(f'downloaded {expectedJar}')
     else:
-      print('great, you have transitfeed')
+      print(f'already had {expectedJar}')
+    
+    return expectedJar
 
   @staticmethod
   def downloadDeps():
-    ValidateGtfs.checkForPython2()
-    ValidateGtfs.checkForTransitFeed()
+    latestJar = ValidateGtfs.checkAndDownloadJar()
 
   @staticmethod
   def validate(fileDest, logger):
