@@ -14,6 +14,8 @@ from api import transitfeeds
 from constants import get_feeds, FEED_DIR, OTP_INPUT_DIR, OTP_OUTPUT_DIR, DEFAULT_GRAPH_NAME
 from utils import downloadFile
 
+dn = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(dn, '..'))
 sys.path.append('..')
 from shared import download_otp
 from shared.download_otp import CURRENT_OTP_JAR

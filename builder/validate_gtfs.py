@@ -4,7 +4,7 @@ import sys
 import requests
 import xml.etree.ElementTree as ET
 from utils import downloadFile
-
+from constants import SCRIPT_DIR
 
 class ValidateGtfs:
   @staticmethod
@@ -41,7 +41,7 @@ class ValidateGtfs:
     else:
       logger.info(f'running gtfs verification')
       reportPath = fileDest + '-validate-report.html'
-      cmd = f'python2 transitfeed/feedvalidator.py -n -o {reportPath} {fileDest}'
+      cmd = f'python2 {SCRIPT_DIR}/transitfeed/feedvalidator.py -n -o {reportPath} {fileDest}'
       try:
         validatorOutput = subprocess.check_output(cmd,
           stderr=subprocess.STDOUT,
