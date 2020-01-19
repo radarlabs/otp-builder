@@ -56,8 +56,8 @@ class ValidateGtfs:
 
     @staticmethod
     def downloadDeps():
-        ValidateGtfs.checkForTransitFeed()
-        latestJar = ValidateGtfs.checkAndDownloadJar()
+        # ValidateGtfs.checkForTransitFeed()
+        ValidateGtfs.checkAndDownloadJar()
 
     @staticmethod
     def validateWithTransitFeed(fileDest, logger):
