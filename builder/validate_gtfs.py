@@ -6,6 +6,12 @@ import xml.etree.ElementTree as ET
 from utils import downloadFile
 from constants import SCRIPT_DIR
 import tempfile
+import shutil
+dn = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(dn, '..'))
+sys.path.append('..')
+from shared import download_otp
+from shared.download_otp import CURRENT_OTP_JAR
 
 
 class ValidateGtfs:
@@ -100,6 +106,26 @@ class ValidateGtfs:
             print(validatorOutput)
             return False
 
+
+    @staticmethod
+    def validateWithOTP(fileDest, logger):
+        download_otp.download()
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            print('created temporary directory', tmpdirname)
+            shutil.copy(fileDest, tmpdirname)
+            try:
+                completedProcess = subprocess.run(['java', '-Xmx2G', '-jar', CURRENT_OTP_JAR, '--build', tmpdirname])
+                if completedProcess.returncode != 0:
+                    return False
+                return True
+            except e:
+                validatorOutput = e.output.decode()
+                import traceback
+                traceback.print_exc()
+                print(e)
+                print(validatorOutput)
+                return False
+
     @staticmethod
     def validate(fileDest, logger):
         logger.info(f'--> verifying {fileDest}')
@@ -110,7 +136,7 @@ class ValidateGtfs:
             logger.info(f'already verified')
         else:
             logger.info(f'running gtfs verification')
-            if not ValidateGtfs.validateWithOneBusAway(fileDest, logger):
+            if not ValidateGtfs.validateWithOTP(fileDest, logger):
                 return False
 
         logger.info(
