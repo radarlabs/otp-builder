@@ -62,7 +62,7 @@ def downloadFeeds():
 
 def runOTP(otpInputDir, otpOutputDir):
   otpJarName = CURRENT_OTP_JAR.rsplit('/', 1)[-1]
-  completedProcess = subprocess.run(['java', '-Xmx10G', '-jar', otpJarName, '--build', otpInputDir])
+  completedProcess = subprocess.run(['java', '-Djava.awt.headless=true', '-Xmx10G', '-jar', otpJarName, '--build', otpInputDir])
   if completedProcess.returncode != 0:
     print(colored('****************', 'red'))
     print(colored('OTP BUILD FAILED', 'red'))

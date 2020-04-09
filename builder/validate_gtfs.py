@@ -31,8 +31,7 @@ class ValidateGtfs:
         if not os.path.exists(expectedJar):
             downloadUrl = f'{prefix}{path}/{latestVersion}/{expectedJar}'
             print(f'downloading {expectedJar} @ {downloadUrl}')
-            downloadFile(downloadUrl,
-                         expectedJar)
+            downloadFile(downloadUrl, expectedJar)
             print(f'downloaded {expectedJar}')
         else:
             print(f'already had {expectedJar}')
@@ -87,16 +86,17 @@ class ValidateGtfs:
     def validateWithOneBusAway(fileDest, logger):
         tmpFileName = ''
         with tempfile.NamedTemporaryFile(suffix='.zip') as tmp:
-          tempFileName = tmp.name
+            tempFileName = tmp.name
 
         cmd = f'java -jar {ValidateGtfs.onebusawayJar} {fileDest} {tempFileName}'
         print(cmd)
         try:
-            validatorOutput = subprocess.check_output(
-                cmd, stderr=subprocess.STDOUT, shell=True).decode()
+            validatorOutput = subprocess.check_output(cmd,
+                                                      stderr=subprocess.STDOUT,
+                                                      shell=True).decode()
             logger.info(validatorOutput)
             if os.path.exists(tempFileName):
-              os.remove(tempFileName)
+                os.remove(tempFileName)
             return True
         except subprocess.CalledProcessError as e:
             validatorOutput = e.output.decode()
@@ -106,15 +106,18 @@ class ValidateGtfs:
             print(validatorOutput)
             return False
 
-
     @staticmethod
     def validateWithOTP(fileDest, logger):
         download_otp.download()
         with tempfile.TemporaryDirectory() as tmpdirname:
-            print('created temporary directory', tmpdirname)
             shutil.copy(fileDest, tmpdirname)
             try:
-                completedProcess = subprocess.run(['java', '-Xmx2G', '-jar', CURRENT_OTP_JAR, '--build', tmpdirname])
+                FNULL = open(os.devnull, 'w')
+                completedProcess = subprocess.run([
+                    'java', '-Djava.awt.headless=true', '-Xmx8G', '-jar', CURRENT_OTP_JAR, '--build',
+                    tmpdirname
+                ],
+                                                  stdout=FNULL)
                 if completedProcess.returncode != 0:
                     return False
                 return True
